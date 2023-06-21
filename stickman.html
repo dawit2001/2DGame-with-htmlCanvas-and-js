@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stickman Fighting Animation</title>
+    <style>
+      #canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="400"></canvas>
+
+    <script>
+      // Get the canvas element and its context
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Set the initial positions and states of the stickmen
+      let stickman1 = {
+        x: 100,
+        y: 200,
+        direction: 1,
+        attacking: false,
+        attackFrame: 0,
+      };
+
+      let stickman2 = {
+        x: 600,
+        y: 200,
+        direction: -1,
+        attacking: false,
+        attackFrame: 0,
+      };
+
+      // Animation loop
+      function animate() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update and draw the stickmen
+        updateStickman(stickman1);
+        updateStickman(stickman2);
+
+        // Request the next animation frame
+        requestAnimationFrame(animate);
+      }
+
+      // Function to update a stickman's state and position
+      function updateStickman(stickman) {
+        // Move the stickman horizontally
+        stickman.x += stickman.direction * 2;
+
+        // Handle the attack animation
+        if (stickman.attacking) {
+          if (stickman.attackFrame < 20) {
+            // Perform the attack animation
+            stickman.y = 180 + Math.sin(stickman.attackFrame * 0.3) * 20;
+            stickman.attackFrame++;
+          } else {
+            // Reset the attack animation
+            stickman.attacking = false;
+            stickman.attackFrame = 0;
+          }
+        }
+
+        // Draw the stickman
+        drawStickman(stickman);
+      }
+
+      // Function to draw a stickman
+      function drawStickman(stickman) {
+        // Draw the head
+        ctx.beginPath();
+        ctx.arc(stickman.x, stickman.y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Draw the body
+        ctx.beginPath();
+        ctx.moveTo(stickman.x, stickman.y + 10);
+        ctx.lineTo(stickman.x, stickman.y + 50);
+        ctx.stroke();
+
+        // Draw the arms
+        ctx.beginPath();
+        ctx.moveTo(stickman.x - 20, stickman.y + 30);
+        ctx.lineTo(stickman.x + 20, stickman.y + 30);
+        ctx.stroke();
+
+        // Draw the legs
+        ctx.beginPath();
+        ctx.moveTo(stickman.x, stickman.y + 50);
+        ctx.lineTo(stickman.x - 20, stickman.y + 80);
+        ctx.moveTo(stickman.x, stickman.y + 50);
+        ctx.lineTo(stickman.x + 20, stickman.y + 80);
+        ctx.stroke();
+
+        // Draw the attacking hand
+        if (stickman.attacking) {
+          ctx.beginPath();
+          ctx.moveTo(stickman.x + stickman.direction * 10, stickman.y + 30);
+          ctx.lineTo(stickman.x + stickman.direction * 40, stickman.y + 30);
+          ctx.stroke();
+        }
+      }
+
+      // Function to handle keydown events
+      // Function to handle keydown events
+      function onKeyDown(event) {
+        // Stickman 1 attacks when 'A' key is pressed
+        if (event.key === "a" && !stickman1.attacking) {
+          stickman1.attacking = true;
+        }
+
+        // Stickman 2 attacks when 'L' key is pressed
+        if (event.key === "l" && !stickman2.attacking) {
+          stickman2.attacking = true;
+        }
+      }
+
+      // Register the keydown event listener
+      document.addEventListener("keydown", onKeyDown);
+
+      // Start the animation
+      animate();
+    </script>
+  </body>
+</html>
